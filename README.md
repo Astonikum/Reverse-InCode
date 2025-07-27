@@ -1,5 +1,5 @@
 # inCode
-inCode is a development environment with support for multiple languages, since Monaco Editor (written on the basis of VSCode) is used as the main code editor, but it is mainly aimed at web development and script development.
+inCode is a development environment with support for multiple languages, since Monaco Editor (written on the basis of VSCode) is used as the main code editor, but it is mainly aimed at web development and script development.<br>
 ![GitHub top language](https://img.shields.io/github/languages/top/Astonikum/Reverse-InCode)
 ![GitHub](https://img.shields.io/github/license/Astonikum/Reverse-InCode)
 ![GitHub Repo stars](https://img.shields.io/github/stars/Astonikum/Reverse-InCode)
