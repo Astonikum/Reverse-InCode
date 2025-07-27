@@ -1,0 +1,134 @@
+/* styles/Download.module.css */
+.container {
+    width: 100%;
+    /*max-width: 1200px;*/
+    padding: 2rem;
+    text-align: center;
+    display: flex; /* Основное изменение - включаем flexbox */
+    flex-direction: column; /* Элементы в колонку */
+    align-items: center; /* Центрирование по горизонтали */
+    justify-content: center; /* Центрирование по вертикали */
+    height: 100vh;
+
+}
+
+.mainTitle {
+    font-family: 'text2', sans-serif;
+    font-size: 5.5rem;
+    letter-spacing: 2px;
+    margin-bottom: 3rem;
+    color: #fafafa;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.platformsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2.5rem;
+}
+
+.platformSection {
+    background: #2a2a2a;
+    border-radius: 6px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    width: 320px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.platformSection:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.platformHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.8rem;
+    padding-bottom: 1.5rem;
+    /*border-bottom: 1px solid #f0f0f0;*/
+}
+
+.platformIcon {
+    width: 48px;
+    height: 48px;
+    margin-right: 15px;
+}
+
+.platformTitle {
+    font-family: 'Tenfont', sans-serif;
+    font-size: 1.8rem;
+    margin: 0;
+    color: #fafafa;
+    font-weight: 200;
+}
+
+.downloadList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.downloadItem {
+    margin-bottom: 1.2rem;
+}
+
+.downloadItem:last-child {
+    margin-bottom: 0;
+}
+
+.downloadLink {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: none;
+    padding: 1rem 1.2rem;
+    border-radius: 1px;
+    background: #3d3d3d;
+    transition: all 0.25s ease;
+}
+
+.downloadLink:hover {
+    background: #2a2a2a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.downloadName {
+    font-size: 2.05rem;
+    color: #fafafa;
+    font-weight: 200;
+    text-align: left;
+    flex-grow: 1;
+    font-family: 'text2', sans-serif;
+    line-height: 24px;
+}
+
+.downloadMeta {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.downloadExt {
+    font-size: 1.9rem;
+    background: #2a2a2a;
+    color: #fafafa;
+    padding: 0.25rem 0.8rem;
+    border-radius: 1px;
+    font-weight: 200;
+    font-family: 'text2', sans-serif;
+    line-height: 24px;
+}
+
+.downloadSize {
+    font-size: 1.3rem;
+    color: #d3d3d3;
+    min-width: 65px;
+    text-align: right;
+    font-weight: 200;
+    font-family: 'text2', sans-serif;
+    line-height: 1px;
+}

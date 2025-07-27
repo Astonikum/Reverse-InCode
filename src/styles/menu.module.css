@@ -1,0 +1,32 @@
+/* menu.module.css */
+.body {
+    overflow: hidden;
+    margin: 0; /* Добавим для сброса стандартных отступов */
+}
+
+.image {
+    width: 32.4vw;
+    height: 6.4vw;
+    display: block; /* Для центрирования через margin */
+    margin-left: auto; /* Центрирование по горизонтали */
+    margin-right: auto; /* Центрирование по горизонтали */
+}
+
+.description {
+    font-size: 1.4vw;
+    font-family: 'text2';
+    color: white !important;
+    font-weight: normal;
+    width: 40vw;
+    text-align: center; /* Центрирование текста */
+    margin-left: auto; /* Центрирование блока по горизонтали */
+    margin-right: auto; /* Центрирование блока по горизонтали */
+}
+
+.container {
+    display: flex; /* Основное изменение - включаем flexbox */
+    flex-direction: column; /* Элементы в колонку */
+    align-items: center; /* Центрирование по горизонтали */
+    justify-content: center; /* Центрирование по вертикали */
+    height: 100vh;
+}
