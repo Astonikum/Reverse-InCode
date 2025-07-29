@@ -1,25 +1,69 @@
-const { app, BrowserWindow } = require("electron");
-const serve = require("electron-serve");
-const path = require("path");
-const { ipcMain, dialog } = require('electron');
+import * as electron from 'electron';
+import serve from "electron-serve";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import {dialog} from "electron";
 
-const appServe = app.isPackaged ? serve({
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const appServe = electron.app.isPackaged ? serve({
     directory: path.join(__dirname, "../out")
 }) : null;
 
+const getCustomAppDataPath = () => {
+    const platform = process.platform;
+    const companyName = 'ReverseTeam';
+    const appName = 'inCode';
+    const dataFolder = 'data';
+
+    if (platform === 'win32') {
+        return path.join(electron.app.getPath('appData'), '..', 'Local', companyName, appName, dataFolder);
+    } else if (platform === 'darwin') {
+        return path.join(electron.app.getPath('appData'), companyName, appName, dataFolder);
+    } else {
+        return path.join(electron.app.getPath('home'), '.config', companyName, appName, dataFolder);
+    }
+};
+
+electron.app.setPath('userData', getCustomAppDataPath());
+
 const createWindow = () => {
-    const win = new BrowserWindow({
+    const win = new electron.BrowserWindow({
         width: 1600,
         height: 900,
         autoHideMenuBar: true,
         webPreferences: {
-            preload: path.join(__dirname, "preload.js")
+            preload: path.join(__dirname, 'preload.js'),
+            // contextIsolation: true,
+            // sandbox: true,
+            contextIsolation: true,
+            nodeIntegration: false, // Должно быть false для безопасности!
+            enableRemoteModule: false
         }
     });
 
-    if (app.isPackaged) {
+    // Обработчики IPC
+    electron.ipcMain.handle('get-custom-appdata-path', () => {
+        return electron.app.getPath('userData');
+    });
+    electron.ipcMain.handle('read-file', (_, filePath) => {
+        return fs.promises.readFile(filePath, 'utf-8');
+    });
+    electron.ipcMain.handle('write-file', (_, filePath, content) => {
+        return fs.promises.writeFile(filePath, content);
+    });
+    electron.ipcMain.handle('open-folder-dialog', async () => {
+        const result = dialog.showOpenDialog({
+            properties: ['openDirectory']
+        })
+        return (await result).filePaths[0] || null
+    })
+
+    if (electron.app.isPackaged) {
         appServe(win).then(() => {
-            win.loadURL("app://-");
+            electron.win.loadURL("app://-");
         });
     } else {
         win.loadURL("http://localhost:3000");
@@ -30,13 +74,13 @@ const createWindow = () => {
     }
 }
 
-app.on("ready", () => {
+electron.app.on("ready", () => {
     createWindow();
 });
 
-app.on("window-all-closed", () => {
+electron.app.on("window-all-closed", () => {
     if(process.platform !== "darwin"){
-        app.quit();
+        electron.app.quit();
     }
 });
 

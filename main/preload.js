@@ -6,5 +6,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     },
     send: (channel, args) => {
         ipcRenderer.send(channel, args);
-    }
+    },
+    getCustomAppDataPath: () => ipcRenderer.invoke('get-custom-appdata-path'),
+    openFolderDialog: () => ipcRenderer.invoke('open-folder-dialog')
 });
