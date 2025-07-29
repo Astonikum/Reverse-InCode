@@ -9,6 +9,7 @@ import {FolderIcon, PlusCircleIcon} from "lucide-react";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {useState} from "react";
 import {ipcRenderer} from "electron";
+import path from "path";
 
 declare global {
     interface Window {
@@ -35,9 +36,23 @@ function ProjectOpenDialog() {
             }
         } catch (error) {
             console.error('Error opening dialog:', error)
+            return
         }
 
-        
+        const appDataPath = await window.electronAPI.getCustomAppDataPath();
+        const projectsPath = path.join(appDataPath, "projects.json");
+        console.log(projectsPath);
+
+        try {
+            // Directly use the string path without formatting
+            const [config] = await Promise.all([
+                window.electronAPI.readFile(projectsPath)
+            ]);
+            // ... rest of your code ...
+        } catch (error) {
+            console.error('Error opening projects.json:', error);
+            return;
+        }
     }
 
     // const openFromFolder = async () => {
