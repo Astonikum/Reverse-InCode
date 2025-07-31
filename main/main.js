@@ -48,43 +48,6 @@ const createWindow = () => {
     electron.ipcMain.handle('get-custom-appdata-path', () => {
         return electron.app.getPath('userData');
     });
-    electron.ipcMain.handle('read-file', async (_, filePath) => {
-        try {
-            // Try to read file directly
-            const data = await fs.readFile(filePath, 'utf-8');
-            console.log("Projects.json exists at:", filePath);
-            return data;
-        } catch (readError) {
-            if (readError.code === 'ENOENT') { // File doesn't exist
-                try {
-                    // Create file with valid initial JSON (empty array)
-                    await fs.writeFile(filePath, "[]", 'utf-8');
-                    console.log('File created successfully:', filePath);
-
-                    // Return initial data
-                    return "[]";
-                } catch (writeError) {
-                    console.error('Error creating file:', writeError);
-                    throw new Error('File creation failed');
-                }
-            } else {
-                // Other read errors (permissions, etc)
-                console.error('Error reading file:', readError);
-                throw new Error('File read failed');
-            }
-        }
-    });
-    electron.ipcMain.handle('write-file', (_, filePath, content) => {
-        return fs.promises.writeFile(filePath, content);
-    });
-    electron.ipcMain.handle('open-folder-dialog', async () => {
-        const result = dialog.showOpenDialog({
-            properties: ['openDirectory']
-        })
-        return (await result).filePaths[0] || null
-    });
-
-
     if (electron.app.isPackaged) {
         appServe(win).then(() => {
             electron.win.loadURL("app://-");

@@ -1,65 +1,51 @@
-import { createContext, useState, useContext } from "react";
+import React, { createContext, useContext, useState, ReactNode } from "react";
 
-// Создаем тип для контекста
 type ProjectContextType = {
-    projectName: string;
-    projectId: string;
-    projectPath: string;
-    buildOptions: string[]; // Уточните тип для опций сборки
-    openProject: (path: string) => void;
-    newProject: (path: string) => void;
+    name: string;
+    path: string;
+    id: string;
+    buildProfiles: string[];
+    setName: (name: string) => void;
+    setPath: (path: string) => void;
+    setId: (id: string) => void;
+    setBuildProfiles: (profiles: string[]) => void;
+    resetProject: () => void;
 };
 
-// Инициализируем контекст с дефолтными значениями
-const ProjectContext = createContext<ProjectContextType>({
-    projectName: "",
-    projectId: "",
-    projectPath: "",
-    buildOptions: [],
-    openProject: () => console.warn("No project provider"),
-    newProject: () => console.warn("No project provider"),
-});
+const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
-export const ProjectProvider = ({ children }) => {
-    // Используем единый объект состояния
-    const [project, setProject] = useState({
-        projectName: "",
-        projectId: "",
-        projectPath: "",
-        buildOptions: [],
-    });
+export const ProjectProvider = ({ children }: { children: ReactNode }) => {
+    const [name, setName] = useState("");
+    const [path, setPath] = useState("");
+    const [id, setId] = useState("");
+    const [buildProfiles, setBuildProfiles] = useState<string[]>([]);
 
-    // Функция для открытия проекта
-    const openProject = (id: string) => {
-        // Здесь должна быть логика инициализации проекта
-        // Пример установки значений:
-        setProject({
-            projectName: "Новый проект",
-            projectId: id,
-            projectPath: path,
-            buildOptions: [], // Замените на реальные опции
-        });
-    };
-
-    const newProject = (path: string) => {
-        // Здесь должна быть логика инициализации проекта
-        // Пример установки значений:
-        openProject(id);
-    };
-
-    // Собираем все значения для провайдера
-    const value = {
-        ...project,
-        openProject,
-        newProject,
+    const resetProject = () => {
+        setName("");
+        setPath("");
+        setId("");
+        setBuildProfiles([]);
     };
 
     return (
-        <ProjectContext.Provider value={value}>
+        <ProjectContext.Provider value={{
+            name,
+            path,
+            id,
+            buildProfiles,
+            setName,
+            setPath,
+            setId,
+            setBuildProfiles,
+            resetProject,
+        }}>
             {children}
         </ProjectContext.Provider>
     );
 };
 
-// Хук для удобного использования контекста
-export const useProject = () => useContext(ProjectContext);
+export const useProject = () => {
+    const ctx = useContext(ProjectContext);
+    if (!ctx) throw new Error("useProject must be used within ProjectProvider");
+    return ctx;
+};

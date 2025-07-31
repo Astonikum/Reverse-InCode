@@ -1,8 +1,9 @@
 import '../app/global.css';
+import { ProjectProvider } from "@/context/project-context";
 
 function MyApp({ Component, pageProps }) {
     return (
-        <Component {...pageProps} />
+        <ProjectProvider><Component {...pageProps} /></ProjectProvider>
     )
 }
 

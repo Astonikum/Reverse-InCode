@@ -1,69 +1,44 @@
-import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
-interface Tab {
-    id: string;
-    path: string;
-    file: string;
-    name: string;
-}
+export type Tab = { id: string; label: string; content: React.ReactNode };
 
-interface TabsContextType {
+type TabsContextType = {
     tabs: Tab[];
-    addTab: (tab: Omit<Tab, 'id'>) => void;
-    removeTab: (id: string) => void;
     activeTab: string;
+    createTab: (tab: Tab) => void;
+    closeTab: (id: string) => void;
     setActiveTab: (id: string) => void;
-    findTabByPath: (path: string) => Tab | undefined;
-}
+};
 
 const TabsContext = createContext<TabsContextType | undefined>(undefined);
 
-export const TabsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [tabs, setTabs] = useState<Tab[]>([]);
-    const [activeTab, setActiveTab] = useState<string>('home');
+export const TabsProvider = ({ children }: { children: React.ReactNode }) => {
+    const [tabs, setTabs] = useState<Tab[]>([
+        { id: "editor", label: "main.ts", content: <div className="flex-1">{/* <MonacoEditor ... /> */}</div> },
+        { id: "preview", label: "Preview", content: <div className="p-4 text-neutral-400">Preview output...</div> }
+    ]);
+    const [activeTab, setActiveTab] = useState("editor");
 
-    // Поиск вкладки по пути
-    const findTabByPath = useCallback((path: string) => {
-        return tabs.find(tab => tab.path === path);
-    }, [tabs]);
-
-    const addTab = useCallback((tab: Omit<Tab, 'id'>) => {
-        // Проверяем, существует ли уже вкладка с таким path
-        const existingTab = tabs.find(t => t.path === tab.path);
-
-        if (existingTab) {
-            // Если вкладка уже открыта - просто активируем её
-            setActiveTab(existingTab.id);
-            return;
+    const createTab = (tab: Tab) => {
+        setTabs(prev => [...prev, tab]);
+        setActiveTab(tab.id);
+    };
+    const closeTab = (id: string) => {
+        setTabs(prev => prev.filter(t => t.id !== id));
+        if (activeTab === id && tabs.length > 1) {
+            setActiveTab(tabs[0].id);
         }
-
-        // Создаём новую вкладку
-        const id = tab.path;
-        setTabs(prev => [...prev, { ...tab, id }]);
-        setActiveTab(id);
-    }, [tabs]);
-
-    const removeTab = useCallback((id: string) => {
-        setTabs(prev => prev.filter(tab => tab.id !== id));
-        if (activeTab === id) setActiveTab('home');
-    }, [activeTab]);
+    };
 
     return (
-        <TabsContext.Provider value={{
-            tabs,
-            addTab,
-            removeTab,
-            activeTab,
-            setActiveTab,
-            findTabByPath
-        }}>
+        <TabsContext.Provider value={{ tabs, activeTab, createTab, closeTab, setActiveTab }}>
             {children}
         </TabsContext.Provider>
     );
 };
 
 export const useTabs = () => {
-    const context = useContext(TabsContext);
-    if (!context) throw new Error('useTabs must be used within a TabsProvider');
-    return context;
+    const ctx = useContext(TabsContext);
+    if (!ctx) throw new Error("useTabs must be used within TabsProvider");
+    return ctx;
 };
